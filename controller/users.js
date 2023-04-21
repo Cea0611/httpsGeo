@@ -27,7 +27,7 @@ const addUser = (req, res) => {
         name: req.body.name,
         username: req.body.username,
         password: req.body.password,
-        latestLatitude : req.body.latestLatitude,
+        latestLaltitude : req.body.latestLaltitude,
         latestLongitude : req.body.latestLongitude
     });
 
@@ -55,6 +55,28 @@ const updateUserLocation = (req, res) => {
     });
 }
 
+const removeById = (req, res) => {
+    console.log(req.params);
+    User.findByIdAndDelete(req.params.id).then((user) => {
+        res.status(200).json(user);
+    },
+    err => {
+        err && res.status(500).send(err.message);
+    });
+};
+
+const updUserLocation = (req, res) => {
+    console.log(req.body);
+    User.updateOne({_id:req.body.id}, 
+        {latestLaltitude:req.body.latestLaltitude, 
+            latestLongitude: req.body.latestLongitude}).then((usr) =>{
+            res.status(200).json(usr);
+        },
+        err => {
+            err && res.status(500).send(err.message);
+    });
+};
+
 const findByUsername = (req, res) => {
     console.log(req.params.username);
     User.find({username:req.params.username}).then((user) => {
@@ -65,4 +87,4 @@ const findByUsername = (req, res) => {
     });
 };
 
-module.exports = { findAllUsers, findById, addUser, updateUserLocation, findByUsername };
+module.exports = { findAllUsers, findById, addUser, updateUserLocation, findByUsername, removeById, updUserLocation };
