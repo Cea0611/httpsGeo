@@ -12,6 +12,35 @@ const findAllUsers = (req, res) => {
     });
 };
 
+const findAllGeoUser = (req, res) =>{
+    User.find().then((users) => {
+      console.log('User FindAll GeoUsers Succes');
+      var geousers = {type: "FeatureCollection", "features":[]};
+      users.map(item=>{
+        geousers.features.push(
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [item.latestLongitude, item.latestLaltitude]
+            },
+            properties: {
+              name: item.name,
+              username: item.username
+            },
+            id: item._id
+          }
+        );
+      });
+      res.status(200).json(geousers);
+    },
+    (err) => {
+      console.log("Find GeoUsers Error");
+      err && res.status(500).send(err.message);
+    }
+    );
+};
+
 const findById = (req, res) => {
     console.log(req.params);
     User.findById(req.params.id).then((user) => {
@@ -87,4 +116,6 @@ const findByUsername = (req, res) => {
     });
 };
 
-module.exports = { findAllUsers, findById, addUser, updateUserLocation, findByUsername, removeById, updUserLocation };
+
+
+module.exports = { findAllGeoUser, findAllUsers, findById, addUser, updateUserLocation, findByUsername, removeById, updUserLocation };
